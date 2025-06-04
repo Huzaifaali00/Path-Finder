@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify'; // Assuming you use toast
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://path-finder-brm0.onrender.com';
 
 function LoginPage({ onLogin }) {
     const [email, setEmail] = useState('');
