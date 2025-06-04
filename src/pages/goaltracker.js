@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://path-finder-brm0.onrender.com';
 
 function GoalTrackerPage() {
   const [goals, setGoals] = useState([]);
