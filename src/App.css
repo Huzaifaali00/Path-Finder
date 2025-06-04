@@ -1,0 +1,1897 @@
+/* App.css - Natural/Earthy Theme for Path Finder */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Merriweather:wght@300;400;700&display=swap');
+/* Changed accent font */
+
+:root {
+  /* Natural/Earthy Color Palette */
+  --color-bg-main: #E7EFC7;
+  /* Lightest - Main Page Background */
+  --color-bg-accent-light: #F0F5E0;
+  /* Slightly off-main for depth */
+  --color-ui-primary: #AEC8A4;
+  /* Sage Green - UI elements, accents */
+  --color-ui-secondary: #C9D8C1;
+  /* Lighter Sage for hover/depth */
+  --color-text-dark: #3B3B1A;
+  /* Darkest - Main Text, Headings */
+  --color-text-medium: #6A5C3F;
+  /* Medium brown for secondary text, derived from #8A784E */
+  --color-border-strong: #8A784E;
+  /* Olive Drab - Borders, accents */
+  --color-border-subtle: #D4DDB5;
+  /* Lighter border derived from main bg */
+
+  /* Interactive/Accent Colors (can be derived or complementary) */
+  --color-accent-action: #A57F3A;
+  /* A warm amber/gold for action buttons, derived from #8A784E */
+  --color-accent-action-hover: #8A682A;
+  --color-link: #7A683E;
+  /* Darker link color for readability */
+  --color-link-hover: var(--color-accent-action);
+
+  --color-success: #5A8B4C;
+  /* Earthy green for success */
+  --color-error: #C0504D;
+  /* Muted red for errors */
+
+  /* Shadows & Depth (more subtle for this theme) */
+  --shadow-soft: 0 4px 12px rgba(59, 59, 26, 0.1);
+  --shadow-medium: 0 6px 18px rgba(59, 59, 26, 0.15);
+  --shadow-strong: 0 8px 25px rgba(59, 59, 26, 0.2);
+  --text-shadow-subtle: 1px 1px 2px rgba(59, 59, 26, 0.1);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease-out;
+  --transition-smooth: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* Fonts */
+  --font-main: 'Poppins', sans-serif;
+  --font-headings: 'Merriweather', serif;
+  /* Serif for a more grounded, classic feel */
+
+  /* RGB versions for rgba() */
+  --color-text-dark-rgb: 59, 59, 26;
+  --color-ui-primary-rgb: 174, 200, 164;
+  --color-accent-action-rgb: 165, 127, 58;
+
+  /* Vision Board Specific */
+  --vision-board-bg: url('https://www.transparenttextures.com/patterns/cork-wallet.png'), #d8cbad;
+  /* Cork texture with fallback */
+  --vision-item-bg: #fffdf7;
+  /* Creamy paper */
+  --vision-item-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15), -1px -1px 3px rgba(0, 0, 0, 0.05) inset;
+  --pin-color: #b0a08c;
+  --pin-highlight: #e0d0bc;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-main);
+  color: var(--color-text-dark);
+  background-color: var(--color-bg-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.7;
+  font-size: 16px;
+  /* Base font size */
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1400px;
+  /* Slightly adjusted max-width */
+  margin: 0 auto;
+  padding: 0 clamp(15px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* Changed from center for general pages */
+  flex-grow: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* For pages like login/signup that need vertical centering */
+.app-container.center-content {
+  justify-content: center;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-headings);
+  color: var(--color-text-dark);
+  letter-spacing: 0.5px;
+  /* Reduced spacing for serif */
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-shadow: var(--text-shadow-subtle);
+}
+
+h1 {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+}
+
+h3 {
+  font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+  color: var(--color-text-medium);
+}
+
+p {
+  color: var(--color-text-medium);
+  margin-bottom: 1.2rem;
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+  max-width: 65ch;
+}
+
+.page-intro-text {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  color: var(--color-text-dark);
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  text-align: center;
+  /* Center intro text */
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--color-accent-action);
+}
+
+blockquote {
+  border-left: 3px solid var(--color-ui-primary);
+  margin: 1.5rem 0;
+  padding: 0.5rem 1.5rem;
+  font-style: italic;
+  color: var(--color-text-medium);
+  background: var(--color-bg-accent-light);
+  border-radius: 0 8px 8px 0;
+}
+
+blockquote p {
+  margin-bottom: 0.5rem;
+}
+
+blockquote footer {
+  font-style: normal;
+  font-size: 0.9em;
+  text-align: right;
+  color: var(--color-link);
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: clamp(25px, 5vh, 35px);
+  padding-top: 25px;
+  animation: fadeInDownGentle 0.8s ease-out 0.1s forwards;
+  opacity: 0;
+}
+
+.app-header h1 {
+  color: var(--color-text-dark);
+  text-shadow: none;
+  /* Remove glow for this theme's title */
+  margin-bottom: 0.3rem;
+}
+
+.app-header .tagline {
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  animation: fadeIn 1s ease-out 0.5s forwards;
+  opacity: 0;
+  font-style: normal;
+  /* Less italic, more straightforward */
+  color: var(--color-text-medium);
+}
+
+@keyframes fadeInDownGentle {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-card-container {
+  background: var(--color-bg-accent-light);
+  padding: clamp(30px, 5vw, 40px) clamp(25px, 4vw, 35px);
+  border-radius: 12px;
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-medium);
+  width: 100%;
+  max-width: 460px;
+  padding-bottom: 10px;
+  text-align: center;
+  position: relative;
+  animation: fadeInUpCard 0.7s var(--transition-smooth) 0.3s forwards;
+  opacity: 1;
+
+}
+
+@keyframes fadeInUpCard {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-form h2,
+.signup-form h2 {
+  margin-bottom: 1.5rem;
+  color: var(--color-text-dark);
+  text-shadow: none;
+}
+
+.forgot-password-link-container {
+  text-align: right;
+  /* Align the link to the right, under the password field */
+  margin-top: -10px;
+  /* Pull it up slightly to be closer to the password field */
+  margin-bottom: 15px;
+  /* Space before the main login button */
+  font-size: 0.85rem;
+  /* Make it slightly smaller */
+}
+
+.forgot-password-link-container a {
+  color: var(--color-text-medium);
+  /* Use a less prominent color */
+  /* text-decoration: underline; */
+  /* Optional: add underline */
+}
+
+.forgot-password-link-container a:hover {
+  color: var(--color-link-hover);
+  /* Use the themed link hover color */
+  text-decoration: underline;
+}
+
+
+.form-subtext {
+  font-size: 0.95rem;
+  color: var(--color-text-medium);
+  margin-top: -0.8rem;
+  margin-bottom: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  text-align: left;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-medium);
+  margin-bottom: 6px;
+  text-transform: none;
+  /* No uppercase for a softer feel */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #fff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  caret-color: var(--color-accent-action);
+}
+
+.form-group input::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-accent-action);
+  box-shadow: 0 0 0 3px rgba(var(--color-accent-action-rgb), 0.2);
+}
+
+.action-button {
+  width: 100%;
+  padding: 14px;
+  background: var(--color-accent-action);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-main);
+  /* Use main font for buttons */
+  font-size: 1.05rem;
+  font-weight: 600;
+  /* Bolder button text */
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  margin-top: 1rem;
+  text-transform: none;
+  /* No uppercase */
+  box-shadow: var(--shadow-soft);
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: var(--color-accent-action-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.action-button:active:not(:disabled) {
+  transform: translateY(0px);
+}
+
+.action-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(var(--color-text-dark-rgb), 0.2);
+  border-top-color: var(--color-text-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.message {
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: left;
+  animation: slideInMessage 0.5s var(--transition-smooth) forwards;
+  border-left: 4px solid;
+}
+
+.error-message {
+  color: #842029;
+  background-color: #f8d7da;
+  border-left-color: var(--color-error);
+}
+
+.success-message {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-left-color: var(--color-success);
+}
+
+@keyframes slideInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-links {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.form-links a {
+  margin: 0 5px;
+  font-weight: 500;
+}
+
+.form-links span {
+  color: var(--color-text-medium);
+}
+
+.app-navbar {
+  width: 100%;
+  padding: 0.8rem clamp(20px, 4vw, 50px);
+  background: var(--color-bg-accent-light);
+  border-bottom: 1px solid var(--color-border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-soft);
+}
+
+.app-navbar .nav-brand {
+  font-family: var(--font-headings);
+  font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+  font-weight: 700;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.app-navbar .nav-brand:hover {
+  color: var(--color-accent-action);
+}
+
+.app-navbar .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.app-navbar .nav-link,
+.app-navbar .nav-button {
+  color: var(--color-text-medium);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.app-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-accent-action);
+  transition: width var(--transition-smooth);
+  border-radius: 1px;
+}
+
+.app-navbar .nav-link:hover::after,
+.app-navbar .nav-link.active::after {
+  width: 100%;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .nav-link.active,
+.app-navbar .nav-button:hover {
+  color: var(--color-text-dark);
+}
+
+.app-navbar .logout-button {
+  background-color: transparent;
+  border: 1px solid var(--color-accent-action);
+  color: var(--color-accent-action);
+  padding: 0.4rem 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 1rem;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.app-navbar .logout-button:hover {
+  background-color: var(--color-accent-action);
+  color: #fff;
+}
+
+.feature-page-container {
+  padding: 2rem 1rem;
+  animation: fadeInPage 0.6s var(--transition-page) 0.1s forwards;
+  opacity: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto 40px auto;
+}
+
+.feature-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.feature-header h2 {
+  color: var(--color-text-dark);
+  text-shadow: none;
+  margin-bottom: 0.5rem;
+}
+
+.feature-header p {
+  font-size: 1.1rem;
+  color: var(--color-text-medium);
+  max-width: 700px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+.content-box {
+  background: #fff;
+  /* Brighter content boxes */
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow var(--transition-smooth), transform var(--transition-smooth), border-color var(--transition-fast);
+}
+
+.content-box:focus-within,
+.content-box.form-active {
+  border-color: var(--color-ui-primary);
+  box-shadow: var(--shadow-medium);
+}
+
+.image-upload-form,
+.quote-add-form {
+  /* Current .content-box styling will apply if class is used */
+  /* Add specific margin if needed when it appears below buttons */
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+  /* More space after the form */
+  max-width: 550px;
+  /* Slightly smaller max-width for these forms */
+  /* Animation for form appearance */
+  animation: slideDownForm 0.4s var(--transition-smooth) forwards;
+  opacity: 0;
+  transform: translateY(-10px);
+  background: rgba(var(--color-ui-primary-rgb), 0.1);
+  /* Example using site theme */
+  border: 1px solid var(--color-border-subtle);
+}
+
+
+@keyframes slideDownForm {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.goal-form,
+.image-upload-form,
+.quote-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.goal-form input[type="text"],
+.image-upload-form input[type="text"],
+.quote-add-form input[type="text"],
+.quote-add-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: #fff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-dark);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.quote-add-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--font-main);
+}
+
+.image-upload-form input[type="file"] {
+  color: var(--color-text-medium);
+  padding: 10px 0;
+}
+
+.image-preview {
+  /* Your existing .image-preview styles are likely fine */
+  max-width: 100%;
+  /* Adjust if needed */
+  max-height: 200px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.image-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.remove-preview-button.small-button {
+  /* For "Change Image" button */
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  width: auto;
+}
+
+.image-upload-form .form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.image-upload-form .form-actions .action-button {
+  flex: 1;
+  /* Make buttons share space */
+  margin-top: 0;
+}
+
+.goal-form .action-button,
+.image-upload-form .action-button,
+.quote-add-form .action-button {
+  margin-top: 0.5rem;
+}
+
+.image-upload-form .choose-file-button {
+  width: 100%;
+  margin-bottom: 1rem;
+  background: transparent;
+  /* Different style for initial select */
+  border: 2px dashed var(--color-ui-accent);
+  color: var(--color-ui-accent);
+}
+
+.image-upload-form .choose-file-button:hover {
+  background: rgba(var(--color-ui-accent-rgb), 0.1);
+  border-style: solid;
+}
+
+.form-error-message {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-container {
+  opacity: 1;
+  animation: fadeInPage 0.6s var(--transition-page) 0.1s forwards;
+}
+
+.dashboard-container h1 {
+  margin-bottom: 1rem;
+}
+
+.dashboard-container>p.page-intro-text {
+  margin-bottom: 2.5rem;
+}
+
+.dashboard-nav {
+  margin: 2rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1rem, 2.5vw, 1.8rem);
+}
+
+.dashboard-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Center content in link */
+  padding: 1.5rem 2rem;
+  background: #fff;
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  text-decoration: none;
+  text-align: center;
+  /* Center text */
+  transition: all var(--transition-smooth);
+  box-shadow: var(--shadow-soft);
+  width: clamp(200px, 30%, 280px);
+  /* Give fixed width for better grid */
+}
+
+.dashboard-link h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.4em;
+  color: var(--color-text-dark);
+  font-family: var(--font-headings);
+}
+
+.dashboard-link p {
+  font-size: 0.9em;
+  color: var(--color-text-medium);
+  margin-bottom: 0;
+  max-width: none;
+  line-height: 1.4;
+}
+
+.dashboard-link:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-strong);
+  border-color: var(--color-ui-primary);
+  background-color: var(--color-bg-accent-light);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  /* Smaller switch for navbar */
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #9E8B81;
+  /* Off color for slider */
+  transition: .3s;
+  border: 1px solid rgba(var(--color-text-dark-rgb), 0.2);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--color-bg-main);
+  transition: .3s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+  background-color: var(--color-accent-action);
+  /* Your theme's action color for ON state */
+  border-color: var(--color-accent-action);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px var(--color-accent-action);
+}
+
+input:checked+.slider:before {
+  transform: translateX(20px);
+  /* Adjust slide distance for smaller switch */
+}
+
+.slider.round {
+  border-radius: 24px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.navbar-reminder-toggle .reminder-status {
+  font-size: 0.85rem;
+  /* Slightly larger for readability */
+  font-weight: 500;
+  color: var(--color-text-on-dark);
+  /* Match other navbar text */
+  min-width: 100px;
+  /* Give more space to "Reminders ON/OFF" to prevent wrapping */
+  text-align: left;
+  margin-left: 0.3rem;
+  /* Space between switch and this text */
+  white-space: nowrap;
+  /* Prevent wrapping of "Reminders ON/OFF" */
+}
+
+.sr-only {
+  /* For screen reader only labels */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+
+.motivational-reminder-placeholder {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: var(--color-bg-accent-light);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: var(--shadow-soft);
+}
+
+.motivational-reminder-placeholder h3 {
+  color: var(--color-accent-action);
+  text-shadow: none;
+}
+
+.dashboard-widgets {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.widget-card {
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.widget-footer-text {
+  margin-top: 1.5em;
+  /* Space above this text */
+  font-size: 0.9em;
+  font-style: italic;
+  text-align: center;
+  color: var(--color-text-medium);
+  opacity: 0.8;
+}
+
+/* Uses .content-box */
+.widget-card h3 {
+  margin-bottom: 1rem;
+  color: var(--color-accent-action);
+  text-shadow: none;
+  font-size: 1.3rem;
+}
+
+.widget-card ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+}
+
+.widget-card ul li {
+  padding: 0.6rem 0.2rem;
+  /* Vertical padding for spacing, little horizontal */
+  margin-bottom: 0.5rem;
+  /* Space between list items */
+  border-bottom: 1px solid rgba(var(--color-text-dark-rgb), 0.08);
+}
+
+.widget-card ul li a {
+  color: var(--color-link);
+  font-weight: 500;
+  /* Make links slightly bolder */
+  display: block;
+  /* Make the link take full width for easier clicking */
+  margin-bottom: 0.25rem;
+  /* Space between link and its sub-text */
+  transition: color var(--transition-fast), letter-spacing var(--transition-fast);
+}
+
+.widget-card ul li a:hover {
+  color: var(--color-accent-action);
+  letter-spacing: 0.3px;
+}
+
+.widget-card p {
+  /* General paragraphs within widget cards */
+  margin-bottom: 0.6rem;
+  /* Tighter spacing for stat lines */
+  color: var(--color-text-medium);
+}
+
+.widget-card p strong {
+  color: var(--color-text-dark);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.widget-card ul li:last-child {
+  border-bottom: none;
+  /* No border for the last item */
+  margin-bottom: 0;
+}
+
+.widget-card ul li span {
+  /* For the sub-text */
+  font-size: 0.85em;
+  color: var(--color-text-medium);
+  opacity: 0.9;
+  display: block;
+  /* Ensure it takes its own line */
+  padding-left: 0.5rem;
+  /* Indent sub-text slightly if no icon */
+}
+
+.vision-board-page .feature-header {
+  margin-bottom: 2rem;
+  /* Reduce space after header */
+}
+
+.add-item-controls-container {
+  display: flex;
+  justify-content: center;
+  /* Position to the right */
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  /* Space before the board wall */
+}
+
+.add-item-controls {
+  /* This will now be a smaller group of buttons */
+  display: flex;
+  gap: 1.5rem;
+}
+
+.add-item-controls .action-button {
+  /* Target all action-buttons in this container */
+
+  /* Specific overrides/additions for these buttons */
+  width: auto;
+  /* Let content size them, or set a specific min-width */
+  min-width: 150px;
+  /* Example min-width */
+  padding: 0.8rem 1.8rem;
+  /* Adjust padding to be substantial */
+  margin-top: 0;
+  /* Remove top margin if .action-button has it */
+  font-size: 1rem;
+  /* Slightly smaller than main form buttons if desired */
+  /* Ensure they use the pink/maroon theme's action button gradient */
+  background: linear-gradient(90deg, var(--color-ui-accent) 0%, var(--color-button-hover-bg) 100%);
+  /* Example using your theme */
+  box-shadow: var(--shadow-medium);
+  /* Use a theme shadow */
+}
+
+.add-item-controls .action-button.active {
+  background: var(--color-highlight);
+  /* Active button gets highlight color */
+  color: var(--color-bg-primary-dark);
+  box-shadow: inset 0 3px 5px rgba(var(--color-bg-primary-dark-rgb), 0.3), var(--shadow-medium);
+  transform: translateY(1px);
+  /* Slight press effect */
+}
+
+.add-item-controls .action-button.active:hover:not(:disabled) {
+  background: var(--color-highlight);
+  /* Keep highlight color on hover when active */
+}
+
+.add-item-controls .action-button.toggle-form {
+  /* Ensure these use your overall site's theme, not vision board item theme */
+  background: var(--color-ui-accent);
+  /* From your new pink/maroon theme */
+  color: var(--color-text-on-dark);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-soft);
+  padding: 0.7rem 1.4rem;
+  font-size: 0.95rem;
+}
+
+.add-item-controls .action-button.secondary,
+.add-item-controls {
+  /* New class for these buttons */
+  background: var(--color-ui-primary);
+  /* Use UI primary color */
+  color: var(--color-text-on-dark);
+  border: 1px solid transparent;
+  /* Remove previous border */
+  box-shadow: var(--shadow-soft);
+  padding: 0.6rem 1.2rem;
+  /* Smaller padding */
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.add-item-controls .action-button.toggle-form:hover {
+  background: var(--color-button-hover-bg);
+  color: var(--color-text-on-dark);
+}
+
+.add-item-controls .action-button.secondary:hover {
+  background: var(--color-button-hover-bg);
+  /* Use defined hover color */
+  color: var(--color-text-on-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Active state for toggle buttons */
+.add-item-controls .action-button.toggle-form.active {
+  background: var(--color-highlight);
+  /* Use highlight for active */
+  color: var(--color-bg-primary-dark);
+  /* Dark text on highlight */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), var(--shadow-medium);
+}
+
+.add-item-controls .action-button:hover:not(:disabled) {
+  /* Inherits hover transform and shimmer if ::before is defined on .action-button */
+  background: linear-gradient(90deg, var(--color-button-hover-bg) 0%, var(--color-ui-accent) 100%);
+  box-shadow: var(--shadow-strong);
+  /* Stronger shadow on hover */
+}
+
+.vision-board-wall {
+  margin-top: 0rem;
+  padding: clamp(2rem, 5vw, 4rem);
+  background-image: url('/public/images/blackboard.png');
+  background-size: cover;
+  /* Cover the entire area */
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+  border-radius: 15px;
+  /* Can keep if you want rounded corners on the image container */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.2);
+  min-height: 70vh;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  overflow: auto;
+}
+
+.vision-board-wall .empty-state.content-box {
+  background: rgba(255, 255, 255, 0.1);
+  /* Light translucent on blackboard */
+  color: #d8c2c2;
+  /* Light text for blackboard */
+  border: 2px dashed rgba(var(--color-text-on-dark-rgb), 0.3);
+  width: auto;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  /* Make empty state box smaller */
+}
+
+.vision-board-wall .empty-state.content-box p {
+  color: #777777;
+}
+
+.vision-board-wall .empty-state h3 {
+  color: #d8c2c2;
+  /* Use a highlight from your main theme */
+}
+
+.vision-board-item {
+  background: var(--vision-item-bg);
+  /* Creamy paper - GOOD for blackboard */
+  border: 1px solid var(--vision-item-border);
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.4),
+    /* Slightly stronger shadow for blackboard */
+    -1px -1px 2px rgba(0, 0, 0, 0.1) inset;
+  /* Inner shadow for paper effect */
+  width: auto;
+  min-width: 160px;
+  /* Can be smaller on blackboard */
+  max-width: 280px;
+  position: relative;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), z-index 0s var(--transition-smooth);
+  /* Random rotation will still be applied by JS inline style */
+}
+
+.vision-board-item.image-item {
+  cursor: pointer;
+  padding-bottom: 10px;
+  /* More space if description is below */
+}
+
+.vision-board-item.quote-item {
+  padding: 15px 18px;
+  max-width: 240px;
+}
+
+.vision-board-item:hover {
+  transform: translateY(-7px) scale(1.06) rotate(var(--hover-rotate, 0deg)) !important;
+  box-shadow: 7px 7px 18px rgba(0, 0, 0, 0.5);
+  /* Stronger hover shadow */
+  z-index: 10;
+}
+
+.vision-board-item .pin {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-10deg);
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, #f0f0f0, #a0a0a0);
+  /* Metallic pin */
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  /* Stronger shadow for pin */
+  z-index: 5;
+  border: 1px solid #777;
+}
+
+.vision-board-item img {
+  width: 100%;
+  /* height: auto; Let aspect ratio define height */
+  max-height: 200px;
+  /* Control max image height within the card */
+  object-fit: cover;
+  display: block;
+  border-radius: 3px;
+  /* Rounding for the image itself */
+  margin-bottom: 8px;
+  /* If description follows */
+  /* Remove explicit white border if the item itself provides the "paper" look */
+  /* border: 3px solid #fff; */
+  /* box-shadow: 0 1px 3px rgba(0,0,0,0.1); */
+}
+
+.vision-board-item:hover img {
+  transform: scale(1.08);
+}
+
+.vision-board-item .quote-content-vb {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  text-align: center;
+}
+
+.vision-board-item .quote-text-vb {
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  font-style: italic;
+  color: var(--vision-quote-text-color);
+  /* Darker text on light paper */
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.vision-board-item .quote-author-vb {
+  font-size: 0.8rem;
+  color: var(--vision-quote-author-color);
+  text-align: right;
+  font-style: italic;
+  margin-top: 0.25rem;
+}
+
+.vision-board-item .image-item-description {
+  font-size: 0.8rem;
+  color: var(--vision-image-desc-color);
+  text-align: center;
+  margin-top: 4px;
+  /* Less space if image border is removed */
+  padding: 0 3px;
+  font-family: var(--font-main);
+}
+
+.delete-button.vision-item-delete {
+  /* Keep your existing refined delete button styles */
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--vision-item-bg);
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+  line-height: 26px;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, background-color var(--transition-fast);
+  z-index: 15;
+}
+
+.vision-board-item:hover .delete-button.vision-item-delete {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.delete-button.vision-item-delete:hover {
+  background-color: var(--color-error);
+  color: #fff;
+}
+
+.vision-board-item:hover .delete-button.vision-item-delete {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.delete-button.vision-item-delete:hover {
+  background-color: var(--color-error);
+  color: #fff;
+}
+
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--color-bg-primary-dark-rgb), 0.9);
+  /* Use site's dark bg */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  animation: fadeInModalOverlay 0.3s ease-out forwards;
+}
+
+@keyframes fadeInModalOverlay {
+  to {
+    opacity: 1;
+  }
+}
+
+.image-modal-content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: zoomInModalContent 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transform: scale(0.75);
+  opacity: 0;
+}
+
+@keyframes zoomInModalContent {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.image-modal-content img {
+  display: block;
+  max-width: 80vw;
+  max-height: 80vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: var(--shadow-strong);
+  border: 4px solid var(--color-highlight);
+}
+
+.image-modal-content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: zoomInModalContent 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transform: scale(0.75);
+  opacity: 0;
+}
+
+@keyframes zoomInModalContent {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.image-modal-content img {
+  display: block;
+  max-width: 85vw;
+  max-height: 70vh;
+  /* Slightly more space */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: var(--shadow-strong);
+  border: 5px solid #fff;
+  /* White border around maximized image */
+}
+
+.close-modal-button {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: var(--color-ui-accent);
+  color: var(--color-text-on-dark);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.close-modal-button:hover {
+  background-color: var(--color-button-hover-bg);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-medium);
+  /* Adjusted for theme */
+  background-color: rgba(var(--color-text-dark-rgb), 0.03);
+  /* Very subtle background for empty state on board */
+  border-radius: 8px;
+  width: 100%;
+  /* Take full width of the board if it's the only item */
+}
+
+.empty-state h3 {
+  color: var(--color-text-dark);
+}
+
+.goal-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.goal-tracker-container .feature-header {
+  margin-bottom: 2.5rem;
+  /* More space after header */
+  position: relative;
+  /* For icon */
+}
+
+.goal-tracker-container .feature-header::before {
+  content: '🎯';
+  /* Target emoji - or use an SVG icon */
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-accent-action);
+  /* Or for SVG: */
+  /* content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-image: url('/path/to/your/goal-icon.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin: 0 auto 0.75rem auto;
+  opacity: 0.8; */
+}
+
+.goal-tracker-container.feature-page-container {
+  /* Subtle pattern for the page background, different from main body */
+  /* Option 1: Subtle noise texture using the existing variable */
+  background-image: var(--noise-texture-url);
+  background-size: 100px;
+  /* Smaller noise pattern */
+  background-color: rgba(var(--color-bg-main-rgb), 0.7);
+  /* Slightly transparent main bg */
+  background-blend-mode: overlay;
+  border-radius: 15px;
+  /* If you want the texture contained */
+  padding-top: 2.5rem;
+  /* More space at the top */
+  margin-top: 1.5rem;
+  /* Space from navbar */
+  box-shadow: var(--shadow-medium);
+}
+
+.goal-form.content-box {
+  /* Target the form if it has content-box */
+  max-width: 650px;
+  /* Slightly wider form */
+  margin-bottom: 2.5rem;
+  /* More space after the form */
+  padding: 1.5rem 2rem;
+  /* Adjust padding */
+  background: rgba(var(--color-ui-primary-rgb), 0.12);
+  /* Slightly different tint for forms */
+}
+
+.goal-form .duration-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.goal-form .duration-group input[type="number"] {
+  width: 80px;
+  /* Smaller width for number input */
+  padding: 10px;
+}
+
+.goal-form .duration-group select {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+  color: var(--color-text-dark);
+  font-family: var(--font-main);
+}
+
+.goal-item {
+  /* This already has .content-box class in your JSX */
+  display: flex;
+  align-items: flex-start;
+  /* Align items to the start for multi-line text */
+  position: relative;
+  transition: all var(--transition-smooth), border-left-color 0.1s ease-in, box-shadow var(--transition-fast);
+  /* border-left: 4px solid transparent; /* For hover effect - keep if desired */
+}
+
+.goal-item.content-box {
+  /* Target items if they have content-box */
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  /* Slightly less space between goals */
+  transition: all var(--transition-smooth), border-left-color 0.15s ease-in, box-shadow var(--transition-fast), transform var(--transition-fast);
+  border-left: 4px solid transparent;
+  /* Initial transparent border for hover transition */
+}
+
+.goal-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+  border-left: 4px solid var(--color-ui-accent);
+}
+
+.goal-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  /* Start transparent or with a very light bg */
+  width: 20px;
+  /* Adjust size as needed */
+  height: 20px;
+  border: 2px solid var(--color-border-strong);
+  /* Use a theme border color */
+  border-radius: 4px;
+  margin-right: 1rem;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  /* Prevent checkbox from shrinking */
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  outline: none;
+  /* Remove default browser outline */
+}
+
+.goal-item input[type="checkbox"]::before {
+  /* The checkmark */
+  content: '\2713';
+  /* Checkmark character Unicode */
+  font-size: 16px;
+  /* Adjust size of checkmark */
+  font-weight: bold;
+  color: var(--color-text-on-dark);
+  /* Color of checkmark when visible */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  /* Initially hidden and scaled down */
+  transition: transform 0.2s ease-in-out;
+  line-height: 1;
+  /* Helps with vertical alignment of checkmark character */
+}
+
+.goal-item input[type="checkbox"]:checked {
+  background-color: var(--color-ui-accent);
+  /* Use theme accent for checked state */
+  border-color: var(--color-ui-accent);
+}
+
+.goal-item input[type="checkbox"]:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+  /* Scale up checkmark to make it visible */
+}
+
+.goal-item input[type="checkbox"]:focus-visible {
+  /* Style for keyboard focus */
+  outline: 2px solid var(--color-ui-accent);
+  outline-offset: 2px;
+}
+
+.goal-text {
+  /* This is a label in your JSX */
+  display: block;
+  /* Make label block to allow margin-bottom */
+  color: var(--color-text-dark);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  /* Adjust for better readability */
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+  /* Add a little space before duration if it exists */
+}
+
+.goal-item.completed .goal-text {
+  text-decoration: line-through;
+  text-decoration-color: rgba(var(--color-text-medium-rgb, 106, 92, 63), 0.7);
+  color: var(--color-text-medium);
+  opacity: 0.7;
+}
+
+.goal-item .goal-details {
+  flex-grow: 1;
+  /* Allow this section to take available space */
+  display: flex;
+  flex-direction: column;
+  /* Stack goal text and duration */
+  text-align: left;
+  margin-right: 0.5rem;
+  /* Space before delete button */
+}
+
+.goal-duration-display {
+  font-size: 0.85rem;
+  /* Slightly larger for better visibility */
+  color: var(--color-text-medium);
+  opacity: 0.9;
+  /* Slightly more visible */
+  font-style: italic;
+  display: block;
+}
+
+.delete-button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-medium);
+  font-size: 1.6rem;
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  transition: color var(--transition-fast), transform var(--transition-fast), opacity var(--transition-fast);
+  opacity: 0.5;
+}
+
+.goal-item .delete-button {
+  opacity: 0.3;
+  /* More subtle initially */
+  margin-left: 0.5rem;
+  /* Space it from text */
+}
+
+.goal-item:hover .delete-button,
+.vision-board-item:hover .delete-button.item-delete-button:not(.vision-item-delete) {
+  opacity: 0.8;
+}
+
+.delete-button:hover {
+  color: var(--color-error);
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.item-delete-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  /* Adjusted for vision board */
+  background-color: rgba(var(--color-text-dark-rgb), 0.3);
+  border-radius: 50%;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+}
+
+.page-spinner {
+  width: 45px;
+  height: 45px;
+  border: 4px solid var(--color-border-subtle);
+  border-top-color: var(--color-accent-action);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-medium);
+  background-color: var(--color-bg-accent-light);
+  border-radius: 8px;
+}
+
+.empty-state.content-box {
+  text-align: center;
+  /* This will center inline/inline-block children like <p> */
+  padding: 2rem;
+  color: var(--color-text-medium);
+  background-color: rgba(var(--color-ui-primary-rgb), 0.05);
+  border-radius: 8px;
+}
+
+.empty-state h3 {
+  color: var(--color-text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  max-width: 90%;
+  /* Prevent very long lines in empty state */
+  margin-left: auto;
+  /* Combined with max-width, this helps center the block of text */
+  margin-right: auto;
+}
+
+@keyframes fadeInPage {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .app-header .tagline {
+    font-size: 1rem;
+  }
+
+  .form-card-container {
+    margin: 20px;
+    padding: 25px 20px;
+  }
+
+  .app-navbar {
+    padding: 0.8rem 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-navbar .nav-brand {
+    margin-bottom: 0.8rem;
+  }
+
+  .app-navbar .nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .navbar-reminder-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    /* Space between switch and ON/OFF text */
+    padding: 0.3rem 0.5rem;
+    background-color: rgba(var(--color-text-on-dark-rgb), 0.1);
+    /* Subtle background */
+    border-radius: 20px;
+    /* Pill shape */
+    margin-left: 0.5rem;
+    /* Space from other nav links */
+  }
+
+
+  .app-navbar .nav-button {
+    margin-left: 0;
+    margin-top: 0.3rem;
+  }
+
+  .dashboard-nav {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dashboard-link {
+    width: 90%;
+    max-width: 350px;
+    margin: 0 auto;
+    padding: 1.2rem;
+  }
+
+  .feature-page-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .vision-board-wall {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .dashboard-widgets {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .app-header .tagline {
+    font-size: 0.9rem;
+  }
+
+  .form-card-container {
+    border-radius: 10px;
+    padding: 20px 15px;
+  }
+
+  .action-button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .app-navbar .nav-brand {
+    font-size: 1.4rem;
+  }
+
+  .app-navbar .nav-links a,
+  .app-navbar .nav-links button {
+    font-size: 0.9rem;
+  }
+
+  .content-box,
+  .vision-board-item {
+    padding: 0.8rem;
+  }
+
+  .goal-item {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .dashboard-link {
+    padding: 1rem;
+  }
+
+  .dashboard-link h3 {
+    font-size: 1.1em;
+  }
+
+  .dashboard-link p {
+    font-size: 0.85em;
+  }
+
+  .feature-header h2 {
+    font-size: clamp(1.3rem, 3vw, 1.6rem);
+  }
+
+  .feature-header p {
+    font-size: 0.95rem;
+  }
+
+  .close-modal-button {
+    width: 32px;
+    height: 32px;
+    font-size: 1.4rem;
+    line-height: 32px;
+    top: -12px;
+    right: -12px;
+  }
+
+  .vision-board-wall {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .image-modal-content img {
+    max-width: 90vw;
+    max-height: 75vh;
+  }
+}
+
+@media (max-width: 850px) {
+
+  /* Example breakpoint, adjust as needed */
+  .app-navbar .nav-links {
+    gap: 0.75rem;
+    /* Adjust gap for all items in nav-links */
+  }
+
+  .navbar-reminder-toggle {
+    margin-left: 0.5rem;
+  }
+
+  .navbar-reminder-toggle .reminder-status {
+    /* display: none; /* Optionally hide ON/OFF text on smaller screens if space is very tight */
+    /* Or make it smaller */
+    font-size: 0.75rem;
+    min-width: fit-content;
+    /* Let it shrink if needed */
+  }
+
+  .switch {
+    /* Slightly smaller switch for mobile */
+    width: 38px;
+    height: 20px;
+  }
+
+  .slider:before {
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+  }
+
+  input:checked+.slider:before {
+    transform: translateX(18px);
+  }
+}
