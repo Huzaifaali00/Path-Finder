@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://path-finder-brm0.onrender.com';
 
 // Receive remindersEnabled as a prop from App.js
 function DashboardPage({ remindersEnabled }) {
