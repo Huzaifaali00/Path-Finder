@@ -20,32 +20,47 @@ const authMiddleware = require('./middleware/authmiddleware'); // Standard casin
 
 const app = express();
 
-// --- Regex for Validation (already present) ---
+// --- Regex for Validation ---
 const EMAIL_REGEX_SERVER = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 const PASSWORD_REGEX_SERVER = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^_\-\.()\[\]{},;<>:\/\\])[A-Za-z\d@$!%*#?&^_\-\.()\[\]{},;<>:\/\\]{8,12}$/;
 
 // --- Database Connection ---
-const MONGO_USER = process.env.MONGO_ADMIN_USER;
-const MONGO_PASS = process.env.MONGO_ADMIN_PASSWORD;
-const MONGO_DB_NAME = "pathfinder_db"; // Or your preferred DB name
-const MONGO_URI = `mongodb://${MONGO_USER}:${MONGO_PASS}@localhost:27017/${MONGO_DB_NAME}?authSource=admin`;
+// For local fallback if MONGO_CLOUD_URI is not set
+const LOCAL_MONGO_USER = process.env.MONGO_ADMIN_USER;
+const LOCAL_MONGO_PASS = process.env.MONGO_ADMIN_PASSWORD;
+const DB_NAME = process.env.MONGO_DB_NAME || "pathfinder_db"; // Use env var or default
+
+// *** MODIFIED MONGO_URI LOGIC ***
+// Prioritize MONGO_CLOUD_URI (for Render/deployed environments)
+// Fallback to local MongoDB connection string if MONGO_CLOUD_URI is not set
+const MONGO_URI = process.env.MONGO_CLOUD_URI || 
+                  `mongodb://${LOCAL_MONGO_USER}:${LOCAL_MONGO_PASS}@localhost:27017/${DB_NAME}?authSource=admin`;
+
+console.log("----------------------------------------------------");
+console.log("DIAGNOSTIC LOGS FOR MONGO CONNECTION:");
+console.log("Value of process.env.MONGO_CLOUD_URI:", process.env.MONGO_CLOUD_URI);
+console.log("Value of process.env.MONGO_ADMIN_USER (for local):", LOCAL_MONGO_USER);
+console.log("Value of process.env.MONGO_DB_NAME:", DB_NAME);
+console.log("EFFECTIVE MONGO_URI BEING USED:", MONGO_URI);
+console.log("----------------------------------------------------");
+
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGO_URI);
-        console.log(`MongoDB Connected Successfully to "${MONGO_DB_NAME}" with authentication!`);
+        await mongoose.connect(MONGO_URI); // MONGO_URI will now use the cloud or local based on env
+        console.log(`MongoDB Connected Successfully using URI: ${MONGO_URI.startsWith('mongodb+srv') ? 'Atlas Cloud' : 'Local Instance'} to database "${DB_NAME}"`);
     } catch (err) {
         console.error('MongoDB Connection Error:', err.message);
+        console.error('Attempted to connect with URI:', MONGO_URI); // Log the URI on error
         process.exit(1);
     }
 };
 connectDB();
 
 // --- Middleware ---
-app.use(cors()); // Enable CORS for all routes
-app.use(express.json()); // To parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // To parse URL-encoded data
-
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- API Routes ---
@@ -56,6 +71,7 @@ app.get('/', (req, res) => {
 
 // == Authentication Routes ==
 app.post('/api/auth/signup', async (req, res) => {
+    // ... (Your existing signup logic - NO CHANGES NEEDED HERE)
     console.log('Signup request body:', req.body);
     const { fullName, email, password } = req.body;
     if (!fullName || !email || !password) {
@@ -92,7 +108,7 @@ app.post('/api/auth/signup', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
-    // ... (your existing login logic - KEEP AS IS) ...
+    // ... (Your existing login logic - NO CHANGES NEEDED HERE)
     console.log('Login attempt body:', req.body);
     const { email, password } = req.body;
     if (!email || !password) {
@@ -124,80 +140,51 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.post('/api/auth/forgot-password', async (req, res) => {
+    // ... (Your existing forgot-password logic - NO CHANGES NEEDED HERE)
     const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ message: 'Email address is required.' });
-    }
+    if (!email) { return res.status(400).json({ message: 'Email address is required.' }); }
     console.log(`Forgot password request for email: ${email}`);
-
     try {
         const user = await User.findOne({ email: email.toLowerCase() });
-
-        // --- MODIFIED BEHAVIOR: Check if user exists ---
         if (!user) {
             console.log(`Forgot password: User not found for email ${email}.`);
-            // Explicitly tell the user their email is not registered
             return res.status(404).json({ message: 'This email address is not registered with Path Finder.' });
         }
-        // --- END OF MODIFIED BEHAVIOR ---
-
-        // If user exists, proceed to generate and send code
         const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-
         user.resetPasswordCode = resetCode;
         user.resetPasswordExpires = Date.now() + 3600000; // Code expires in 1 hour
         await user.save();
-
         const emailSubject = 'Your Path Finder Password Reset Code';
-        const emailMessageText = `Hello ${user.fullName},\n\nYou requested a password reset...\nYour code is: ${resetCode}\n...`; // Keep your email content
-        const emailMessageHtml = `<p>Hello ${user.fullName},</p><p>Your code is: <strong>${resetCode}</strong>...</p>`; // Keep your email content
-
+        const emailMessageText = `Hello ${user.fullName},\n\nYou requested a password reset...\nYour code is: ${resetCode}\n...`;
+        const emailMessageHtml = `<p>Hello ${user.fullName},</p><p>Your code is: <strong>${resetCode}</strong>...</p>`;
         try {
-            await sendEmail({
-                email: user.email,
-                subject: emailSubject,
-                message: emailMessageText,
-                htmlMessage: emailMessageHtml
-            });
+            await sendEmail({ email: user.email, subject: emailSubject, message: emailMessageText, htmlMessage: emailMessageHtml });
             console.log(`Password reset code successfully sent to ${user.email}`);
             res.status(200).json({ message: 'A password reset code has been sent to your email address.' });
         } catch (emailError) {
             console.error(`Failed to send password reset email to ${user.email}:`, emailError);
-            res.status(500).json({ message: 'Could not send reset email. Please try again. (Dev: Check console for code: ' + resetCode + ')' });
+            res.status(500).json({ message: 'Could not send reset email. Please try again. (Dev: Check console for code: ' + resetCode + ')'});
         }
-
     } catch (err) {
         console.error('Forgot Password Server Error:', err.message, err.stack);
         res.status(500).json({ message: 'An error occurred processing your request. Please try again later.' });
     }
 });
 
-// --- NEW: Reset Password Route ---
 app.post('/api/auth/reset-password', async (req, res) => {
+    // ... (Your existing reset-password logic - NO CHANGES NEEDED HERE)
     const { email, code, newPassword, confirmPassword } = req.body;
-    if (!email || !code || !newPassword || !confirmPassword) {
-        return res.status(400).json({ message: 'All fields are required.' });
-    }
-    if (newPassword !== confirmPassword) {
-        return res.status(400).json({ message: 'New passwords do not match.' });
-    }
-    if (!PASSWORD_REGEX_SERVER.test(newPassword)) { // Re-use password regex from signup
-        return res.status(400).json({
-            message: "New password must be 8-12 characters long and include at least one letter, one digit, and one special character."
-        });
-    }
+    if (!email || !code || !newPassword || !confirmPassword) { return res.status(400).json({ message: 'All fields are required.' });}
+    if (newPassword !== confirmPassword) { return res.status(400).json({ message: 'New passwords do not match.' }); }
+    if (!PASSWORD_REGEX_SERVER.test(newPassword)) { return res.status(400).json({ message: "New password must be 8-12 characters long and include at least one letter, one digit, and one special character." });}
     console.log(`Reset password attempt for email: ${email} with code: ${code}`);
     try {
-        const user = await User.findOne({
-            email: email.toLowerCase(),
-            resetPasswordCode: code,
-            resetPasswordExpires: { $gt: Date.now() }
-        });
+        const user = await User.findOne({ email: email.toLowerCase(), resetPasswordCode: code, resetPasswordExpires: { $gt: Date.now() } });
         if (!user) {
             console.log("Reset password: Invalid code, expired code, or email not found.");
             return res.status(400).json({ message: 'Invalid or expired password reset code.' });
         }
-        user.password = newPassword; // Hashing handled by pre-save hook
+        user.password = newPassword;
         user.resetPasswordCode = undefined;
         user.resetPasswordExpires = undefined;
         await user.save();
