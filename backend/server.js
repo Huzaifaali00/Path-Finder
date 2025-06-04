@@ -13,10 +13,10 @@ require('dotenv').config(); // Load environment variables
 // Import Models
 const User = require('./models/User'); // Standard casing
 const Goal = require('./models/Goal');   // Standard casing
-const VisionBoardItem = require('./models/VisionBoardItem'); // Standard casing
+const VisionBoardItem = require('./models/visionboarditem'); // Standard casing
 
 // Import Auth Middleware
-const authMiddleware = require('./middleware/authMiddleware'); // Standard casing
+const authMiddleware = require('./middleware/authmiddleware'); // Standard casing
 
 const app = express();
 
