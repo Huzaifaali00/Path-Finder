@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify'; // Assuming you use toast
+
 
 const API_URL = 'https://path-finder-brm0.onrender.com';
 
