@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const API_URL = 'https://path-finder-brm0.onrender.com';
+const API_URL = 'https://path-finder-brm0.onrender.com/api';
 
 function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
