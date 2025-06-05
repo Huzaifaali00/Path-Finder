@@ -93,7 +93,7 @@ function GoalTrackerPage() {
         goalData.durationUnit = newGoalDurationUnit;
       }
       // console.log("Frontend: Sending this goalData to backend:", goalData);
-      const response = await axios.post(`${API_URL}/goals`, goalData, authConfig);
+      
       // Instead of prepending, re-fetch to get the latest list from server (more robust)
       // setGoals((prevGoals) => [response.data.goal, ...prevGoals]); 
       fetchGoals(); // Re-fetch goals to include the new one and any other server-side changes
