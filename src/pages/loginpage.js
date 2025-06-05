@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 
-const API_URL = 'https://path-finder-brm0.onrender.com';
+const API_URL = 'https://path-finder-brm0.onrender.com/api';
 
 function LoginPage({ onLogin }) {
     const [email, setEmail] = useState('');
