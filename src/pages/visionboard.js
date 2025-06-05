@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import ImageUploadForm from '../components/ImageUploadForm'; // Ensure this path is correct
 import QuoteAddForm from '../components/QuoteAddForm';     // Ensure this path is correct
 
-const API_URL = 'https://path-finder-brm0.onrender.com';
+const API_URL = 'https://path-finder-brm0.onrender.com/api';
 
 // Modal component for maximizing image
 function ImageModal({ src, alt, onClose }) {
