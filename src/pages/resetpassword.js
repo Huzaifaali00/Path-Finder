@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const API_URL = 'https://path-finder-brm0.onrender.com';
-const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^_\-\.()\[\]{},;<>:\/\\])[A-Za-z\d@$!%*#?&^_\-\.()\[\]{},;<>:\/\\]{8,12}$/;
+const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^_\-.()[\]{},;<>:/\\^"])[A-Za-z\d@$!%*#?&^_\-.()[\]{},;<>:/\\^"]{8,12}$/;
 
 
 function ResetPasswordPage() {
