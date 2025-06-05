@@ -71,44 +71,61 @@ function GoalTrackerPage() {
     fetchGoals();
   }, [fetchGoals]); // This runs fetchGoals once on mount and if fetchGoals reference changes
 
-  const handleAddGoal = async (e) => {
-    e.preventDefault();
-    if (!newGoalText.trim()) {
-      toast.warn("Goal text cannot be empty.");
-      return;
-    }
-    setIsSubmitting(true);
-    setError(''); // Clear previous page-level errors
-    const authConfig = getAuthHeaders();
-    if (!authConfig) {
+ const handleAddGoal = async (e) => {
+  e.preventDefault();
+  if (!newGoalText.trim()) {
+    toast.warn("Goal text cannot be empty.");
+    return;
+  }
+  setIsSubmitting(true);
+  setError('');
+  const authConfig = getAuthHeaders();
+  if (!authConfig) {
       setIsSubmitting(false);
       toast.error("Authentication error. Please log in again.");
       return;
+  }
+
+  const goalData = { text: newGoalText.trim() };
+  const parsedDuration = parseInt(newGoalDuration);
+  if (newGoalDuration && !isNaN(parsedDuration) && parsedDuration > 0) {
+    goalData.duration = parsedDuration;
+    goalData.durationUnit = newGoalDurationUnit;
+  }
+  console.log("GoalTrackerPage - handleAddGoal - Sending data to POST /api/goals:", goalData); // LOG A
+
+  try {
+    const response = await axios.post(`${API_URL}/goals`, goalData, authConfig);
+    console.log("GoalTrackerPage - handleAddGoal - SUCCESS response from POST /api/goals:", response.data); // LOG B
+    
+    // Option 1: Optimistically add and then re-fetch for absolute consistency (can cause a slight flicker)
+    // setGoals((prevGoals) => [response.data.goal, ...prevGoals]); // Add to start IF backend returns the full new goal
+
+    fetchGoals(); // Re-fetch all goals to ensure UI is perfectly in sync
+    
+    setNewGoalText('');
+    setNewGoalDuration('');
+    setNewGoalDurationUnit('days');
+    toast.success("Goal added to your path!");
+  } catch (err) {
+    const errorMessage = err.response?.data?.message || 'Failed to add goal.';
+    setError(errorMessage); // Set page level error if needed
+    toast.error(errorMessage);
+    console.error('GoalTrackerPage - handleAddGoal - ERROR from POST /api/goals:', err.response || err); // LOG C
+    // Log the full error object to see status, data, etc.
+    if (err.response) {
+        console.error('Error data:', err.response.data);
+        console.error('Error status:', err.response.status);
+        console.error('Error headers:', err.response.headers);
+    } else if (err.request) {
+        console.error('Error request:', err.request);
+    } else {
+        console.error('Error message:', err.message);
     }
-    try {
-      const goalData = { text: newGoalText.trim() };
-      const parsedDuration = parseInt(newGoalDuration);
-      if (newGoalDuration && !isNaN(parsedDuration) && parsedDuration > 0) {
-        goalData.duration = parsedDuration;
-        goalData.durationUnit = newGoalDurationUnit;
-      }
-      // console.log("Frontend: Sending this goalData to backend:", goalData);
-      
-      // Instead of prepending, re-fetch to get the latest list from server (more robust)
-      // setGoals((prevGoals) => [response.data.goal, ...prevGoals]); 
-      fetchGoals(); // Re-fetch goals to include the new one and any other server-side changes
-      setNewGoalText('');
-      setNewGoalDuration('');
-      setNewGoalDurationUnit('days');
-      toast.success("Goal added to your path!");
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Failed to add goal.';
-      toast.error(errorMessage); // Show specific error for add goal
-      console.error('Add goal error:', err.response || err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // handleToggleComplete and handleDeleteGoal can remain similar, 
   // but also consider re-fetching goals on success for consistency.
