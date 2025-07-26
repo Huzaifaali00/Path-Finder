@@ -7,16 +7,17 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
+const { put } = require('@vercel/blob'); // <-- 1. ADD THIS IMPORT
 const sendEmail = require('./utils/sendemail');
 require('dotenv').config(); // Load environment variables
 
 // Import Models
-const User = require('./models/User'); // Standard casing
-const Goal = require('./models/Goal');   // Standard casing
-const VisionBoardItem = require('./models/visionboarditem'); // Standard casing
+const User = require('./models/User');
+const Goal = require('./models/Goal');
+const VisionBoardItem = require('./models/visionboarditem');
 
 // Import Auth Middleware
-const authMiddleware = require('./middleware/authmiddleware'); // Standard casing
+const authMiddleware = require('./middleware/authmiddleware');
 
 const app = express();
 
@@ -29,16 +30,8 @@ const LOCAL_MONGO_USER = process.env.MONGO_ADMIN_USER;
 const LOCAL_MONGO_PASS = process.env.MONGO_ADMIN_PASSWORD;
 const DB_NAME = process.env.MONGO_DB_NAME || "pathfinder_db";
 
-const MONGO_URI = process.env.MONGO_CLOUD_URI || 
-                  `mongodb://${LOCAL_MONGO_USER}:${LOCAL_MONGO_PASS}@localhost:27017/${DB_NAME}?authSource=admin`;
-
-console.log("----------------------------------------------------");
-console.log("DIAGNOSTIC LOGS FOR MONGO CONNECTION:");
-console.log("Value of process.env.MONGO_CLOUD_URI:", process.env.MONGO_CLOUD_URI);
-console.log("Value of process.env.MONGO_ADMIN_USER (for local):", LOCAL_MONGO_USER);
-console.log("Value of process.env.MONGO_DB_NAME:", DB_NAME);
-console.log("EFFECTIVE MONGO_URI BEING USED:", MONGO_URI);
-console.log("----------------------------------------------------");
+const MONGO_URI = process.env.MONGO_CLOUD_URI ||
+    `mongodb://${LOCAL_MONGO_USER}:${LOCAL_MONGO_PASS}@localhost:27017/${DB_NAME}?authSource=admin`;
 
 const connectDB = async () => {
     try {
@@ -46,7 +39,6 @@ const connectDB = async () => {
         console.log(`MongoDB Connected Successfully using URI: ${MONGO_URI.startsWith('mongodb+srv') ? 'Atlas Cloud' : 'Local Instance'} to database "${DB_NAME}"`);
     } catch (err) {
         console.error('MongoDB Connection Error:', err.message);
-        console.error('Attempted to connect with URI:', MONGO_URI);
         process.exit(1);
     }
 };
@@ -54,15 +46,10 @@ connectDB();
 
 // --- Middleware ---
 
-// ***** TEMPORARY CHANGE FOR DEBUGGING *****
-// This temporarily allows requests from ANY origin to confirm if CORS options are the issue.
-app.use(cors()); // This is the only line needed for the test.
-
-/*
-// The previous specific configuration is commented out for now.
+// ***** FINAL SECURE CORS CONFIGURATION *****
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://path-finder-frontend-mu.vercel.app'
+    'https://path-finder-frontend-mu.vercel.app' // Your live frontend URL
 ];
 const corsOptions = {
     origin: function (origin, callback) {
@@ -74,19 +61,17 @@ const corsOptions = {
     }
 };
 app.use(cors(corsOptions));
-*/
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // <-- 2. DELETE THIS LINE
 
 // --- API Routes ---
 app.get('/', (req, res) => {
-    console.log("Backend: / route hit");
     res.send('Path Finder API is running!');
 });
 
-// == Authentication Routes ==
+// == Authentication Routes (No changes needed) ==
 app.post('/api/auth/signup', async (req, res) => {
     console.log('Signup request body:', req.body);
     const { fullName, email, password } = req.body;
@@ -122,7 +107,6 @@ app.post('/api/auth/signup', async (req, res) => {
         res.status(500).json({ message: 'Server error during signup' });
     }
 });
-
 app.post('/api/auth/login', async (req, res) => {
     console.log('Login attempt body:', req.body);
     const { email, password } = req.body;
@@ -153,7 +137,6 @@ app.post('/api/auth/login', async (req, res) => {
         res.status(500).json({ message: 'Server error during login' });
     }
 });
-
 app.post('/api/auth/forgot-password', async (req, res) => {
     const { email } = req.body;
     if (!email) { return res.status(400).json({ message: 'Email address is required.' }); }
@@ -177,19 +160,18 @@ app.post('/api/auth/forgot-password', async (req, res) => {
             res.status(200).json({ message: 'A password reset code has been sent to your email address.' });
         } catch (emailError) {
             console.error(`Failed to send password reset email to ${user.email}:`, emailError);
-            res.status(500).json({ message: 'Could not send reset email. Please try again. (Dev: Check console for code: ' + resetCode + ')'});
+            res.status(500).json({ message: 'Could not send reset email. Please try again. (Dev: Check console for code: ' + resetCode + ')' });
         }
     } catch (err) {
         console.error('Forgot Password Server Error:', err.message, err.stack);
         res.status(500).json({ message: 'An error occurred processing your request. Please try again later.' });
     }
 });
-
 app.post('/api/auth/reset-password', async (req, res) => {
     const { email, code, newPassword, confirmPassword } = req.body;
-    if (!email || !code || !newPassword || !confirmPassword) { return res.status(400).json({ message: 'All fields are required.' });}
+    if (!email || !code || !newPassword || !confirmPassword) { return res.status(400).json({ message: 'All fields are required.' }); }
     if (newPassword !== confirmPassword) { return res.status(400).json({ message: 'New passwords do not match.' }); }
-    if (!PASSWORD_REGEX_SERVER.test(newPassword)) { return res.status(400).json({ message: "New password must be 8-12 characters long and include at least one letter, one digit, and one special character." });}
+    if (!PASSWORD_REGEX_SERVER.test(newPassword)) { return res.status(400).json({ message: "New password must be 8-12 characters long and include at least one letter, one digit, and one special character." }); }
     console.log(`Reset password attempt for email: ${email} with code: ${code}`);
     try {
         const user = await User.findOne({ email: email.toLowerCase(), resetPasswordCode: code, resetPasswordExpires: { $gt: Date.now() } });
@@ -210,7 +192,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
 });
 
 
-// == Goal Routes (Protected by authMiddleware) ==
+// == Goal Routes (No changes needed) ==
 app.get('/api/goals', authMiddleware, async (req, res) => {
     console.log(`Backend GET /api/goals - Route hit. User from authMiddleware:`, req.user);
     try {
@@ -226,7 +208,6 @@ app.get('/api/goals', authMiddleware, async (req, res) => {
         res.status(500).send('Server Error when fetching goals');
     }
 });
-
 app.post('/api/goals', authMiddleware, async (req, res) => {
     console.log("Backend POST /api/goals received req.body:", req.body);
     const { text, duration, durationUnit } = req.body;
@@ -265,7 +246,6 @@ app.post('/api/goals', authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Server Error when creating goal' });
     }
 });
-
 app.put('/api/goals/:goalId/toggle', authMiddleware, async (req, res) => {
     try {
         const goal = await Goal.findById(req.params.goalId);
@@ -280,7 +260,6 @@ app.put('/api/goals/:goalId/toggle', authMiddleware, async (req, res) => {
         res.status(500).send('Server Error updating goal');
     }
 });
-
 app.delete('/api/goals/:goalId', authMiddleware, async (req, res) => {
     try {
         const goal = await Goal.findById(req.params.goalId);
@@ -305,7 +284,6 @@ app.get('/api/visionboard', authMiddleware, async (req, res) => {
         res.status(500).send('Server Error fetching vision board items');
     }
 });
-
 app.post('/api/visionboard/quote', authMiddleware, async (req, res) => {
     const { text, author, description } = req.body;
     if (!text || text.trim() === "") {
@@ -321,35 +299,39 @@ app.post('/api/visionboard/quote', authMiddleware, async (req, res) => {
     }
 });
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) { cb(null, 'uploads/'); },
-    filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-')); }
-});
+// 3. DELETE OLD MULTER CONFIG
+// const storage = multer.diskStorage({ ... });
+// const fileFilter = (req, file, cb) => { ... };
+// const upload = multer({ storage: storage, ... });
 
-const fileFilter = (req, file, cb) => {
-    if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) { cb(null, true); }
-    else { cb(new Error('Only JPEG, PNG, GIF, WEBP images are allowed!'), false); }
-};
+// 4. ADD NEW MULTER CONFIG (to process file in memory)
+const upload = multer({ storage: multer.memoryStorage() });
 
-const upload = multer({ storage: storage, limits: { fileSize: 1024 * 1024 * 5 }, fileFilter: fileFilter });
-
-app.post('/api/visionboard/image', authMiddleware, upload.single('imageFile'), async (req, res, next) => {
+// 5. REPLACE THE IMAGE UPLOAD ROUTE
+app.post('/api/visionboard/image', authMiddleware, upload.single('imageFile'), async (req, res) => {
     const { description } = req.body;
-    if (!req.file) { return res.status(400).json({ message: 'Image file is required' }); }
+    if (!req.file) {
+        return res.status(400).json({ message: 'Image file is required' });
+    }
+
     try {
-        const imageUrl = `/uploads/${req.file.filename}`;
-        const newItem = new VisionBoardItem({ type: 'image', url: imageUrl, description: description ? description.trim() : undefined, user: req.user.id });
+        const filename = req.file.originalname;
+        const blob = await put(filename, req.file.buffer, { access: 'public' });
+
+        const newItem = new VisionBoardItem({
+            type: 'image',
+            url: blob.url, // Save the public URL from Vercel Blob
+            description: description ? description.trim() : undefined,
+            user: req.user.id
+        });
+
         const item = await newItem.save();
         res.status(201).json({ message: 'Image uploaded successfully', item });
+
     } catch (err) {
         console.error('Upload image error:', err.message, err.stack);
-        res.status(500).send('Server Error uploading image');
+        return res.status(500).json({ message: 'Server error during image upload.' });
     }
-}, (error, req, res, next) => {
-    if (error) {
-        return res.status(400).json({ message: error.message });
-    }
-    next();
 });
 
 app.delete('/api/visionboard/:itemId', authMiddleware, async (req, res) => {
