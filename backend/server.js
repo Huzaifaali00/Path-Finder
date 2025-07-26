@@ -61,7 +61,7 @@ connectDB();
 
 const allowedOrigins = [
     'http://localhost:3000',                 // For your local testing
-    'https://path-finder-frontend-mu.vercel.app/'  // <-- PASTE YOUR LIVE FRONTEND URL HERE
+    'https://path-finder-frontend-mu.vercel.app'  // <-- PASTE YOUR LIVE FRONTEND URL HERE
 ];
 
 const corsOptions = {
