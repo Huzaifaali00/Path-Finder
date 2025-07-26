@@ -25,14 +25,10 @@ const EMAIL_REGEX_SERVER = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 const PASSWORD_REGEX_SERVER = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^_\-\.()\[\]{},;<>:\/\\])[A-Za-z\d@$!%*#?&^_\-\.()\[\]{},;<>:\/\\]{8,12}$/;
 
 // --- Database Connection ---
-// For local fallback if MONGO_CLOUD_URI is not set
 const LOCAL_MONGO_USER = process.env.MONGO_ADMIN_USER;
 const LOCAL_MONGO_PASS = process.env.MONGO_ADMIN_PASSWORD;
-const DB_NAME = process.env.MONGO_DB_NAME || "pathfinder_db"; // Use env var or default
+const DB_NAME = process.env.MONGO_DB_NAME || "pathfinder_db";
 
-// *** MODIFIED MONGO_URI LOGIC ***
-// Prioritize MONGO_CLOUD_URI (for Render/deployed environments)
-// Fallback to local MongoDB connection string if MONGO_CLOUD_URI is not set
 const MONGO_URI = process.env.MONGO_CLOUD_URI || 
                   `mongodb://${LOCAL_MONGO_USER}:${LOCAL_MONGO_PASS}@localhost:27017/${DB_NAME}?authSource=admin`;
 
@@ -44,14 +40,13 @@ console.log("Value of process.env.MONGO_DB_NAME:", DB_NAME);
 console.log("EFFECTIVE MONGO_URI BEING USED:", MONGO_URI);
 console.log("----------------------------------------------------");
 
-
 const connectDB = async () => {
     try {
-        await mongoose.connect(MONGO_URI); // MONGO_URI will now use the cloud or local based on env
+        await mongoose.connect(MONGO_URI);
         console.log(`MongoDB Connected Successfully using URI: ${MONGO_URI.startsWith('mongodb+srv') ? 'Atlas Cloud' : 'Local Instance'} to database "${DB_NAME}"`);
     } catch (err) {
         console.error('MongoDB Connection Error:', err.message);
-        console.error('Attempted to connect with URI:', MONGO_URI); // Log the URI on error
+        console.error('Attempted to connect with URI:', MONGO_URI);
         process.exit(1);
     }
 };
@@ -59,11 +54,16 @@ connectDB();
 
 // --- Middleware ---
 
-const allowedOrigins = [
-    'http://localhost:3000',                 // For your local testing
-    'https://path-finder-frontend-mu.vercel.app'  // <-- PASTE YOUR LIVE FRONTEND URL HERE
-];
+// ***** TEMPORARY CHANGE FOR DEBUGGING *****
+// This temporarily allows requests from ANY origin to confirm if CORS options are the issue.
+app.use(cors()); // This is the only line needed for the test.
 
+/*
+// The previous specific configuration is commented out for now.
+const allowedOrigins = [
+    'http://localhost:3000',
+    'https://path-finder-frontend-mu.vercel.app'
+];
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -73,7 +73,8 @@ const corsOptions = {
         }
     }
 };
-app.use(cors(corsOptions)); // This line replaces the old one
+app.use(cors(corsOptions));
+*/
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -87,7 +88,6 @@ app.get('/', (req, res) => {
 
 // == Authentication Routes ==
 app.post('/api/auth/signup', async (req, res) => {
-    // ... (Your existing signup logic - NO CHANGES NEEDED HERE)
     console.log('Signup request body:', req.body);
     const { fullName, email, password } = req.body;
     if (!fullName || !email || !password) {
@@ -124,7 +124,6 @@ app.post('/api/auth/signup', async (req, res) => {
 });
 
 app.post('/api/auth/login', async (req, res) => {
-    // ... (Your existing login logic - NO CHANGES NEEDED HERE)
     console.log('Login attempt body:', req.body);
     const { email, password } = req.body;
     if (!email || !password) {
@@ -156,7 +155,6 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.post('/api/auth/forgot-password', async (req, res) => {
-    // ... (Your existing forgot-password logic - NO CHANGES NEEDED HERE)
     const { email } = req.body;
     if (!email) { return res.status(400).json({ message: 'Email address is required.' }); }
     console.log(`Forgot password request for email: ${email}`);
@@ -188,7 +186,6 @@ app.post('/api/auth/forgot-password', async (req, res) => {
 });
 
 app.post('/api/auth/reset-password', async (req, res) => {
-    // ... (Your existing reset-password logic - NO CHANGES NEEDED HERE)
     const { email, code, newPassword, confirmPassword } = req.body;
     if (!email || !code || !newPassword || !confirmPassword) { return res.status(400).json({ message: 'All fields are required.' });}
     if (newPassword !== confirmPassword) { return res.status(400).json({ message: 'New passwords do not match.' }); }
@@ -214,7 +211,6 @@ app.post('/api/auth/reset-password', async (req, res) => {
 
 
 // == Goal Routes (Protected by authMiddleware) ==
-// ... (your existing Goal routes: GET, POST, PUT, DELETE - KEEP AS IS) ...
 app.get('/api/goals', authMiddleware, async (req, res) => {
     console.log(`Backend GET /api/goals - Route hit. User from authMiddleware:`, req.user);
     try {
@@ -300,7 +296,6 @@ app.delete('/api/goals/:goalId', authMiddleware, async (req, res) => {
 });
 
 // == Vision Board Routes ==
-// ... (your existing Vision Board routes: GET, POST quote, POST image, DELETE - KEEP AS IS) ...
 app.get('/api/visionboard', authMiddleware, async (req, res) => {
     try {
         const items = await VisionBoardItem.find({ user: req.user.id }).sort({ createdAt: -1 });
@@ -310,6 +305,7 @@ app.get('/api/visionboard', authMiddleware, async (req, res) => {
         res.status(500).send('Server Error fetching vision board items');
     }
 });
+
 app.post('/api/visionboard/quote', authMiddleware, async (req, res) => {
     const { text, author, description } = req.body;
     if (!text || text.trim() === "") {
@@ -329,10 +325,12 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) { cb(null, 'uploads/'); },
     filename: function (req, file, cb) { cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-')); }
 });
+
 const fileFilter = (req, file, cb) => {
     if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.mimetype)) { cb(null, true); }
     else { cb(new Error('Only JPEG, PNG, GIF, WEBP images are allowed!'), false); }
 };
+
 const upload = multer({ storage: storage, limits: { fileSize: 1024 * 1024 * 5 }, fileFilter: fileFilter });
 
 app.post('/api/visionboard/image', authMiddleware, upload.single('imageFile'), async (req, res, next) => {
@@ -367,11 +365,5 @@ app.delete('/api/visionboard/:itemId', authMiddleware, async (req, res) => {
         res.status(500).send('Server Error deleting vision board item');
     }
 });
-
-/* --- Server Listening ---
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});*/
 
 module.exports = app;
