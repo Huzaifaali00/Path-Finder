@@ -58,7 +58,23 @@ const connectDB = async () => {
 connectDB();
 
 // --- Middleware ---
-app.use(cors());
+
+const allowedOrigins = [
+    'http://localhost:3000',                 // For your local testing
+    'https://path-finder-frontend-mu.vercel.app/'  // <-- PASTE YOUR LIVE FRONTEND URL HERE
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+};
+app.use(cors(corsOptions)); // This line replaces the old one
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
