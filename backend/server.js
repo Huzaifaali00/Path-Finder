@@ -352,8 +352,10 @@ app.delete('/api/visionboard/:itemId', authMiddleware, async (req, res) => {
     }
 });
 
-// --- Server Listening ---
+/* --- Server Listening ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-});
+});*/
+
+module.exports = app;
