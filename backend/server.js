@@ -45,13 +45,13 @@ const connectDB = async () => {
 connectDB();
 
 // --- Middleware ---
-
-// ***** FINAL SECURE CORS CONFIGURATION *****
+// ***** UPDATED CORS CONFIGURATION WITH BOTH FRONTENDS *****
 const allowedOrigins = [
     'http://localhost:3000',
     'https://pathfinder11.netlify.app',
     'https://path-finder-neon.vercel.app'
 ];
+
 const corsOptions = {
     origin: function (origin, callback) {
         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
@@ -62,10 +62,13 @@ const corsOptions = {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 };
+
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable preflight for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // <-- 2. DELETE THIS LINE
