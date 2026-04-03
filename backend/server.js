@@ -49,7 +49,7 @@ connectDB();
 // ***** FINAL SECURE CORS CONFIGURATION *****
 const allowedOrigins = [
     'http://localhost:3000',
-    'https://path-finder-frontend-mu.vercel.app' // Your live frontend URL
+    'https://pathfinder11.netlify.app/' // Your live frontend URL
 ];
 const corsOptions = {
     origin: function (origin, callback) {
