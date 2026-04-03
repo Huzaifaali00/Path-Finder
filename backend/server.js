@@ -48,7 +48,9 @@ connectDB();
 
 // ***** FINAL SECURE CORS CONFIGURATION *****
 const allowedOrigins = [
-    'https://path-finder-neon.vercel.app/' // Your live frontend URL
+    'http://localhost:3000',
+    'https://pathfinder11.netlify.app',
+    'https://path-finder-neon.vercel.app'
 ];
 const corsOptions = {
     origin: function (origin, callback) {
